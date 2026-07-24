@@ -1,94 +1,79 @@
-# MediGuide — Project Structure
+# MediGuide — Project Structure (Updated Day 3)
 
-Version 1.0 | Day 2 Deliverable
+Version 1.1 | Originally created Day 2, updated Day 3 with implementation details
 
 ---
 
-## 1. Folder Structure
+## 1. Actual Folder Structure (as of Day 3)
 
 ```
 MediGuide/
 │
-├── app.py                     # Flask app factory, route registrations, config
-├── requirements.txt           # Python dependencies (generated via pip freeze)
-├── .env                       # ANTHROPIC_API_KEY, SECRET_KEY (gitignored, never committed)
-├── .gitignore                 # Excludes venv, __pycache__, .env, mediguide.db
-├── Procfile                   # Deployment start command (added Day 9)
-├── README.md                  # Project overview, setup steps, live link (finalized Day 10)
+├── app.py                     # Flask app factory: config, db init, login manager, routes
+├── extensions.py               # Shared SQLAlchemy `db` instance (avoids circular imports)
+├── requirements.txt            # Pinned dependency list (pip freeze output)
+├── .env                        # Local secrets: SECRET_KEY, ANTHROPIC_API_KEY (gitignored)
+├── .env.example                # Template for .env, safe to commit
+├── .gitignore                  # Excludes venv, __pycache__, .env, instance/, mediguide.db
+├── README.md                   # Project overview (finalized Day 10)
 │
-├── /models                    # SQLAlchemy models — one file per entity
-│   ├── user.py                 # User model (Day 3)
-│   ├── booking.py               # Booking model (Day 6)
-│   └── review.py                # Review model (Day 7)
+├── /venv                      # Python virtual environment (gitignored, not committed)
+├── /instance                  # Auto-created by Flask; holds mediguide.db (gitignored)
+│   └── mediguide.db
 │
-├── /services                  # Business logic isolated from routes
-│   └── ai_service.py            # Claude API integration (Day 4)
+├── /models
+│   ├── __init__.py             # Makes "models" a Python package
+│   └── user.py                 # User model: id, phone_number, pin_hash, created_at
 │
-├── /data                      # Static/mock reference data + access helpers
-│   ├── doctors.json             # Mock doctor/hospital dataset (Day 5)
-│   └── doctor_repository.py     # Query/filter helpers for doctors.json (Day 5)
+├── /services                  # (Empty today — populated Day 4 with ai_service.py)
 │
-├── /templates                 # Jinja2 HTML templates
-│   ├── base.html                 # Shared layout: navbar, footer (Day 2)
-│   ├── index.html                # Homepage (Day 2)
-│   ├── signup.html               # Signup form (Day 3)
-│   ├── login.html                # Login form (Day 3)
-│   ├── symptom_checker.html      # Symptom input form (Day 4)
-│   ├── results.html              # AI results display (Day 4)
-│   ├── doctors.html              # Directory grid + filters (Day 5)
-│   ├── doctor_detail.html        # Doctor profile + reviews + booking entry (Day 5, updated Day 7)
-│   ├── book_appointment.html     # Booking form (Day 6)
-│   ├── my_appointments.html      # User's bookings list (Day 6)
-│   ├── reschedule.html           # Reschedule form (Day 6)
-│   ├── 404.html                  # Not-found error page (Day 8)
-│   └── error.html                # Generic server error page (Day 8)
+├── /data                      # (Empty today — populated Day 5 with doctors.json + repository)
+│
+├── /templates
+│   ├── base.html                # Shared layout: navbar, footer, block structure
+│   └── index.html               # Homepage content (extends base.html)
 │
 ├── /static
 │   ├── /css
-│   │   └── style.css             # Shared design system: colors, spacing, components
+│   │   └── style.css             # Full design system: colors, navbar, hero, footer, responsive rules
 │   └── /js
-│       └── main.js               # Star ratings, loading states, small interactions
+│       └── main.js               # Placeholder for future interactions (Day 4+)
 │
-└── /docs                       # Project documentation (this Day 2 deliverable set)
+└── /docs                      # Planning & design documentation
     ├── ARCHITECTURE.md
     ├── SCHEMA.md
     ├── API.md
     ├── UI-WIREFRAMES.md
-    └── PROJECT-STRUCTURE.md
+    ├── PROJECT-STRUCTURE.md      (this file)
+    ├── SETUP.md                   (Day 3)
+    ├── ENVIRONMENT.md             (Day 3)
+    └── DAY3-SUMMARY.md            (Day 3)
 ```
 
 ---
 
-## 2. Rationale for Each Major Folder
+## 2. What Changed Since Day 2's Version
 
-- **`/models`** — Keeps database structure isolated from route logic. Each entity (User, Booking, Review) gets its own file so the schema stays easy to navigate as it grows across Days 3, 6, and 7.
-- **`/services`** — Isolates external API logic (Claude) from Flask routes. This means `ai_service.py` can be tested or modified independently without touching route handlers — a clean separation of concerns.
-- **`/data`** — Groups all mock/reference data together with its access logic. Since doctors.json is not a database table, keeping its repository helper alongside it makes the "who reads this file" relationship obvious.
-- **`/templates`** — Standard Flask convention (Flask looks for this exact folder name). All pages extend `base.html` so navbar/footer changes only need to happen in one place.
-- **`/static`** — Standard Flask convention for CSS/JS/images. Keeping `css` and `js` as subfolders (rather than flat files) keeps this scalable if more assets are added later.
-- **`/docs`** — Keeps all planning/design documentation in the repo itself (versioned alongside code), so future days — and anyone reviewing the project — can see the full design reasoning without hunting through chat history.
+| Item | Day 2 Plan | Day 3 Reality | Why |
+|---|---|---|---|
+| Database file location | Assumed project root | Actually lives in `/instance` | This is Flask's default convention when using a relative SQLite URI — not a deviation, just how Flask behaves. No action needed; already gitignored. |
+| `extensions.py` | Not explicitly planned | Added | Needed to avoid a circular import between `app.py` and `models/user.py`. Both need the same `db` object, so it lives in its own small file. Purely an implementation detail — no scope change. |
+| `.env.example` | Not explicitly planned | Added | Best practice so the real `.env` structure is documented and shareable without exposing real secrets. |
 
----
-
-## 3. Where Future Code Will Live (Day-by-Day Mapping)
-
-| Day | New Files/Folders |
-|---|---|
-| Day 2 (today) | app.py, base.html, index.html, style.css, main.js, /docs/*.md |
-| Day 3 | models/user.py, templates/signup.html, templates/login.html |
-| Day 4 | services/ai_service.py, templates/symptom_checker.html, templates/results.html |
-| Day 5 | data/doctors.json, data/doctor_repository.py, templates/doctors.html, templates/doctor_detail.html |
-| Day 6 | models/booking.py, templates/book_appointment.html, templates/my_appointments.html, templates/reschedule.html |
-| Day 7 | models/review.py (review section added to doctor_detail.html) |
-| Day 8 | templates/404.html, templates/error.html (polish pass across all templates + style.css) |
-| Day 9 | Procfile (deployment config) |
-| Day 10 | README.md finalized (no new app code) |
+No other deviations. `/services` and `/data` remain empty today exactly as scheduled — they're built Day 4 and Day 5 respectively.
 
 ---
 
-## 4. Why This Structure Was Chosen
+## 3. Why `extensions.py` Exists (Explained Simply)
 
-- **Matches Flask conventions** (`templates/`, `static/`) so no custom configuration is needed — reduces setup friction and debugging risk.
-- **Separates concerns cleanly**: models (data), services (external logic), data (mock reference), templates/static (presentation). This means each day's work touches a predictable, isolated part of the codebase.
-- **Scales without restructuring**: every day from Day 3–9 only adds new files into existing folders — no folder reorganization needed mid-build, which protects against wasted time.
-- **Fresh-conversation friendly**: because the structure is explicit and documented in `/docs`, a new AI conversation on any future day can understand the whole project layout immediately without needing to explore the codebase from scratch.
+Both `app.py` and `models/user.py` need to use the same database connection object (`db`). If `db` were created directly inside `app.py`, then `models/user.py` would need to import `app.py` to use it — but `app.py` also needs to import `models/user.py` to register the User model. Python can't resolve two files that need each other at the same time (a "circular import"), so `db` lives in its own neutral file that both can import from safely.
+
+---
+
+## 4. Confirmed Working (Day 3)
+
+- ✅ Folder structure matches this document exactly
+- ✅ `flask run` starts with no errors
+- ✅ Homepage renders with correct styling
+- ✅ Database creates successfully with the `users` table
+- ✅ No unused or orphaned files

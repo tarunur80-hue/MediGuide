@@ -1,0 +1,129 @@
+/* style.css
+   ---------------------------------------------------------
+   This is MediGuide's shared design system. Every page uses
+   these same colors, fonts, and spacing via base.html, so the
+   whole app looks consistent without repeating CSS everywhere.
+   ---------------------------------------------------------
+*/
+
+:root {
+  --color-navy: #1F3A5F;
+  --color-teal: #2E9E9E;
+  --color-teal-light: #4EE6C4;
+  --color-bg: #F4F7F8;
+  --color-text: #1A1A1A;
+  --color-text-muted: #5A5A5A;
+  --color-border: #E2E8EC;
+  --radius: 10px;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.navbar-brand {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-navy);
+  text-decoration: none;
+}
+
+.navbar-brand span {
+  color: var(--color-teal);
+}
+
+.navbar-links {
+  display: flex;
+  gap: 28px;
+}
+
+.navbar-links a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.navbar-links a:hover {
+  color: var(--color-teal);
+}
+
+/* ---------- Page content ---------- */
+.page-content {
+  flex: 1;
+  padding: 60px 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ---------- Hero (homepage) ---------- */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.hero h1 {
+  font-size: 40px;
+  color: var(--color-navy);
+  margin-bottom: 16px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+}
+
+.hero-note {
+  font-size: 15px;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .navbar-links {
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero h1 {
+    font-size: 28px;
+  }
+}

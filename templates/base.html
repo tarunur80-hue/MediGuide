@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MediGuide{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-brand">Medi<span>Guide</span></a>
+        <nav class="navbar-links">
+            <!-- These links are placeholders today (Day 3). The pages they
+                 point to (symptom checker, doctors, login) are built on
+                 Days 4-5. We're only wiring up the homepage link for now. -->
+            <a href="#">Symptom Checker</a>
+            <a href="#">Find Doctors</a>
+            <a href="#">Login</a>
+        </nav>
+    </header>
+
+    <main class="page-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>MediGuide &mdash; AB Talks 60-Day Claude Challenge Capstone</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
