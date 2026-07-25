@@ -1,8 +1,9 @@
 /* style.css
    ---------------------------------------------------------
-   This is MediGuide's shared design system. Every page uses
-   these same colors, fonts, and spacing via base.html, so the
-   whole app looks consistent without repeating CSS everywhere.
+   MediGuide's shared design system. Every page uses these
+   same colors, fonts, and spacing via base.html.
+   Day 4 update: added styles for the symptom checker form,
+   results page, disclaimer box, and flash messages.
    ---------------------------------------------------------
 */
 
@@ -14,6 +15,9 @@
   --color-text: #1A1A1A;
   --color-text-muted: #5A5A5A;
   --color-border: #E2E8EC;
+  --color-mild: #2E9E6B;
+  --color-serious: #C9622E;
+  --color-danger-bg: #FFF7ED;
   --radius: 10px;
   --shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
@@ -103,6 +107,194 @@ body {
   color: var(--color-text-muted);
 }
 
+/* ---------- Symptom Checker Form ---------- */
+.checker-section {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.checker-section h1 {
+  font-size: 30px;
+  color: var(--color-navy);
+  margin-bottom: 10px;
+}
+
+.checker-intro {
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+.checker-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checker-form label {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-navy);
+}
+
+.checker-form textarea {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 15px;
+  resize: vertical;
+  background: #ffffff;
+}
+
+.checker-form textarea:focus {
+  outline: none;
+  border-color: var(--color-teal);
+}
+
+.btn-primary {
+  background-color: var(--color-teal);
+  color: #ffffff;
+  border: none;
+  padding: 14px 24px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-primary:hover {
+  background-color: #257f7f;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.loading-indicator {
+  margin-top: 16px;
+  text-align: center;
+  color: var(--color-teal);
+  font-weight: 600;
+}
+
+/* ---------- Flash messages ---------- */
+.flash-message {
+  background-color: #FFF3E0;
+  border: 1px solid #F0C089;
+  color: #8A5A00;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* ---------- Results Page ---------- */
+.results-section {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.severity-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  margin-bottom: 14px;
+  color: #ffffff;
+}
+
+.severity-mild {
+  background-color: var(--color-mild);
+}
+
+.severity-uncertain-serious {
+  background-color: var(--color-serious);
+}
+
+.results-section h1 {
+  font-size: 30px;
+  color: var(--color-navy);
+  margin-bottom: 24px;
+}
+
+.result-card {
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.result-card h3 {
+  font-size: 14px;
+  color: var(--color-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.result-card p {
+  font-size: 15px;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.suggestion-card {
+  border-left: 4px solid var(--color-mild);
+}
+
+.specialist-card {
+  border-left: 4px solid var(--color-serious);
+}
+
+.btn-secondary {
+  display: inline-block;
+  margin-top: 12px;
+  background-color: var(--color-navy);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.btn-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.disclaimer-box {
+  background-color: var(--color-danger-bg);
+  border: 1px solid #F0C089;
+  border-radius: var(--radius);
+  padding: 16px;
+  font-size: 13.5px;
+  color: #8A5A00;
+  margin: 20px 0;
+}
+
+.btn-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--color-teal);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
 /* ---------- Footer ---------- */
 .footer {
   text-align: center;
@@ -125,5 +317,9 @@ body {
   }
   .hero h1 {
     font-size: 28px;
+  }
+  .checker-section h1,
+  .results-section h1 {
+    font-size: 24px;
   }
 }

@@ -10,10 +10,9 @@
     <header class="navbar">
         <a href="{{ url_for('home') }}" class="navbar-brand">Medi<span>Guide</span></a>
         <nav class="navbar-links">
-            <!-- These links are placeholders today (Day 3). The pages they
-                 point to (symptom checker, doctors, login) are built on
-                 Days 4-5. We're only wiring up the homepage link for now. -->
-            <a href="#">Symptom Checker</a>
+            <a href="{{ url_for('symptom_checker') }}">Symptom Checker</a>
+            <!-- These two remain placeholders today (Day 4). They're built
+                 Day 5 (doctors directory) and Day 3/4-later (login). -->
             <a href="#">Find Doctors</a>
             <a href="#">Login</a>
         </nav>

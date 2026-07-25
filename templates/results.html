@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Your Results - MediGuide{% endblock %}
+
+{% block content %}
+<section class="results-section">
+    <div class="severity-badge severity-{{ result.severity }}">
+        {% if result.severity == 'mild' %}
+            MILD
+        {% else %}
+            NEEDS ATTENTION
+        {% endif %}
+    </div>
+
+    <h1>{{ result.condition }}</h1>
+
+    <div class="result-card">
+        <h3>Why we think this</h3>
+        <p>{{ result.reasoning }}</p>
+    </div>
+
+    {% if result.otc_suggestion %}
+    <div class="result-card suggestion-card">
+        <h3>Suggested Over-the-Counter Care</h3>
+        <p>{{ result.otc_suggestion }}</p>
+    </div>
+    {% endif %}
+
+    {% if result.specialist_type %}
+    <div class="result-card specialist-card">
+        <h3>Recommended Next Step</h3>
+        <p>We recommend consulting a: <strong>{{ result.specialist_type }}</strong></p>
+        <a href="#" class="btn-secondary btn-disabled" title="Doctor directory launches Day 5">Find a Doctor Nearby (coming soon)</a>
+    </div>
+    {% endif %}
+
+    <div class="disclaimer-box">
+        ⚠️ {{ result.disclaimer }}
+    </div>
+
+    <a href="{{ url_for('symptom_checker') }}" class="btn-link">&larr; Check different symptoms</a>
+</section>
+{% endblock %}

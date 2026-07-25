@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Symptom Checker - MediGuide{% endblock %}
+
+{% block content %}
+<section class="checker-section">
+    <h1>Describe Your Symptoms</h1>
+    <p class="checker-intro">
+        Tell us what you're experiencing in plain language. We'll help you understand
+        what it might mean and what to do next.
+    </p>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-message">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('symptom_checker') }}" class="checker-form" id="checkerForm">
+        <label for="symptoms">Your symptoms</label>
+        <textarea
+            id="symptoms"
+            name="symptoms"
+            rows="6"
+            maxlength="1000"
+            placeholder="e.g. I've had a sore throat and mild fever since yesterday, along with a runny nose..."
+            required>{{ request.form.get('symptoms', '') }}</textarea>
+
+        <button type="submit" class="btn-primary" id="submitBtn">Analyze Symptoms</button>
+    </form>
+
+    <div class="loading-indicator" id="loadingIndicator" style="display:none;">
+        <p>Analyzing your symptoms...</p>
+    </div>
+</section>
+
+<script>
+    document.getElementById('checkerForm').addEventListener('submit', function() {
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = 'Analyzing...';
+        document.getElementById('loadingIndicator').style.display = 'block';
+    });
+</script>
+{% endblock %}
