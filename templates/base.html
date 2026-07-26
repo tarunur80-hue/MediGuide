@@ -11,9 +11,9 @@
         <a href="{{ url_for('home') }}" class="navbar-brand">Medi<span>Guide</span></a>
         <nav class="navbar-links">
             <a href="{{ url_for('symptom_checker') }}">Symptom Checker</a>
-            <!-- These two remain placeholders today (Day 4). They're built
-                 Day 5 (doctors directory) and Day 3/4-later (login). -->
-            <a href="#">Find Doctors</a>
+            <a href="{{ url_for('doctors') }}">Find Doctors</a>
+            <!-- Login remains a placeholder today. Built when authentication
+                 UI is wired up (scaffold already exists from Day 3). -->
             <a href="#">Login</a>
         </nav>
     </header>

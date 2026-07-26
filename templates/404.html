@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - MediGuide{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>404 — Page Not Found</h1>
+    <p class="hero-subtitle">We couldn't find what you were looking for.</p>
+    <a href="{{ url_for('home') }}" class="btn-link">&larr; Back to homepage</a>
+</section>
+{% endblock %}

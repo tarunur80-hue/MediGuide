@@ -30,7 +30,7 @@
     <div class="result-card specialist-card">
         <h3>Recommended Next Step</h3>
         <p>We recommend consulting a: <strong>{{ result.specialist_type }}</strong></p>
-        <a href="#" class="btn-secondary btn-disabled" title="Doctor directory launches Day 5">Find a Doctor Nearby (coming soon)</a>
+        <a href="{{ url_for('doctors') }}" class="btn-secondary">Find a Doctor Nearby</a>
     </div>
     {% endif %}
 

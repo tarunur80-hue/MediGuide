@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ doctor.name }} - MediGuide{% endblock %}
+
+{% block content %}
+<section class="detail-section">
+    <a href="{{ url_for('doctors') }}" class="btn-link">&larr; Back to directory</a>
+
+    <div class="detail-header">
+        <div class="doctor-avatar doctor-avatar-large">{{ doctor.name.split(' ')[1][0] if doctor.name.split(' ')|length > 1 else doctor.name[0] }}</div>
+        <div>
+            <h1>{{ doctor.name }}</h1>
+            <p class="detail-specialty">{{ doctor.specialty }}</p>
+            <p class="detail-hospital">{{ doctor.hospital_name }} &middot; 📍 {{ doctor.area }}</p>
+            <p class="detail-rating">★ {{ doctor.base_rating }} &middot; ₹{{ doctor.consultation_fee }} consultation fee</p>
+        </div>
+    </div>
+
+    <div class="result-card">
+        <h3>About</h3>
+        <p>{{ doctor.short_bio }}</p>
+    </div>
+
+    <div class="result-card">
+        <a href="#" class="btn-primary btn-disabled" title="Booking launches Day 6">Book Appointment (coming soon)</a>
+    </div>
+
+    <div class="reviews-section">
+        <h3>Reviews ({{ doctor.seed_reviews|length }})</h3>
+        {% for review in doctor.seed_reviews %}
+        <div class="review-card">
+            <div class="review-stars">{% for i in range(review.rating) %}★{% endfor %}{% for i in range(5 - review.rating) %}☆{% endfor %}</div>
+            <p class="review-author">{{ review.reviewer_label }}</p>
+            <p class="review-text">{{ review.text }}</p>
+        </div>
+        {% endfor %}
+
+        <a href="#" class="btn-link btn-disabled" title="Review submission launches Day 7">Write a review (coming soon)</a>
+    </div>
+</section>
+{% endblock %}

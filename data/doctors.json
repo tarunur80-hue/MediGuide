@@ -1,0 +1,317 @@
+[
+  {
+    "id": "doc_001",
+    "name": "Dr. Ansh Verma",
+    "specialty": "General Physician",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Karol Bagh City Clinic",
+    "base_rating": 4.3,
+    "short_bio": "10+ years experience in general medicine and preventive care.",
+    "consultation_fee": 500,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Very thorough and patient with questions."},
+      {"reviewer_label": "Patient", "rating": 4, "text": "Good experience, short wait time."}
+    ]
+  },
+  {
+    "id": "doc_002",
+    "name": "Dr. Priya Nair",
+    "specialty": "Dermatologist",
+    "area": "Delhi - Dwarka",
+    "hospital_name": "Dwarka Skin & Wellness Center",
+    "base_rating": 4.6,
+    "short_bio": "Specializes in acne, skin allergies, and cosmetic dermatology.",
+    "consultation_fee": 800,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Explained everything clearly and treatment worked well."}
+    ]
+  },
+  {
+    "id": "doc_003",
+    "name": "Dr. Rakesh Malhotra",
+    "specialty": "Cardiologist",
+    "area": "Delhi - Rohini",
+    "hospital_name": "Rohini Heart Institute",
+    "base_rating": 4.7,
+    "short_bio": "Senior cardiologist with focus on preventive heart care and diagnostics.",
+    "consultation_fee": 1200,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Extremely knowledgeable, took time to explain my reports."}
+    ]
+  },
+  {
+    "id": "doc_004",
+    "name": "Dr. Sneha Kapoor",
+    "specialty": "Pediatrician",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Little Stars Children's Clinic",
+    "base_rating": 4.8,
+    "short_bio": "Gentle, child-friendly approach with 12 years of pediatric experience.",
+    "consultation_fee": 600,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "My daughter actually enjoys her checkups now!"},
+      {"reviewer_label": "Patient", "rating": 5, "text": "Very calm and reassuring with kids."}
+    ]
+  },
+  {
+    "id": "doc_005",
+    "name": "Dr. Vikram Singh",
+    "specialty": "ENT Specialist",
+    "area": "Delhi - Dwarka",
+    "hospital_name": "Dwarka ENT & Sinus Center",
+    "base_rating": 4.2,
+    "short_bio": "Expert in sinus issues, hearing problems, and throat infections.",
+    "consultation_fee": 700,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "Fixed my chronic sinus issue after years of discomfort."}
+    ]
+  },
+  {
+    "id": "doc_006",
+    "name": "Dr. Meera Iyer",
+    "specialty": "General Physician",
+    "area": "Delhi - Rohini",
+    "hospital_name": "Rohini Family Health Clinic",
+    "base_rating": 4.4,
+    "short_bio": "Family medicine practitioner focused on holistic, long-term care.",
+    "consultation_fee": 450,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "Affordable and reliable for regular checkups."}
+    ]
+  },
+  {
+    "id": "doc_007",
+    "name": "Dr. Arjun Mehta",
+    "specialty": "Orthopedic",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Karol Bagh Bone & Joint Hospital",
+    "base_rating": 4.5,
+    "short_bio": "Specializes in sports injuries, joint pain, and fractures.",
+    "consultation_fee": 900,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Helped me recover from a knee injury quickly."}
+    ]
+  },
+  {
+    "id": "doc_008",
+    "name": "Dr. Kavita Rao",
+    "specialty": "Gynecologist",
+    "area": "Delhi - Dwarka",
+    "hospital_name": "Dwarka Women's Health Center",
+    "base_rating": 4.9,
+    "short_bio": "Compassionate care with 15+ years in women's health.",
+    "consultation_fee": 1000,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Made me feel comfortable discussing sensitive topics."},
+      {"reviewer_label": "Patient", "rating": 5, "text": "Best gynecologist I've visited in Delhi."}
+    ]
+  },
+  {
+    "id": "doc_009",
+    "name": "Dr. Rohan Gupta",
+    "specialty": "Dentist",
+    "area": "Delhi - Rohini",
+    "hospital_name": "Rohini Dental Care",
+    "base_rating": 4.3,
+    "short_bio": "Cosmetic and general dentistry with painless treatment focus.",
+    "consultation_fee": 400,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "Painless root canal, highly recommend."}
+    ]
+  },
+  {
+    "id": "doc_010",
+    "name": "Dr. Anjali Desai",
+    "specialty": "Psychiatrist",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Mind Wellness Clinic",
+    "base_rating": 4.7,
+    "short_bio": "Focuses on anxiety, depression, and stress management.",
+    "consultation_fee": 1100,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Non-judgmental and genuinely helpful sessions."}
+    ]
+  },
+  {
+    "id": "doc_011",
+    "name": "Dr. Suresh Nambiar",
+    "specialty": "General Physician",
+    "area": "Delhi - Dwarka",
+    "hospital_name": "Dwarka Metro Health Clinic",
+    "base_rating": 4.1,
+    "short_bio": "Quick, efficient consultations for common ailments.",
+    "consultation_fee": 400,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "Convenient location and quick service."}
+    ]
+  },
+  {
+    "id": "doc_012",
+    "name": "Dr. Divya Krishnan",
+    "specialty": "Dermatologist",
+    "area": "Delhi - Rohini",
+    "hospital_name": "Rohini Derma Care",
+    "base_rating": 4.5,
+    "short_bio": "Specializes in acne scars, pigmentation, and hair loss treatment.",
+    "consultation_fee": 750,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "My skin has improved so much after treatment."}
+    ]
+  },
+  {
+    "id": "doc_013",
+    "name": "Dr. Karan Chawla",
+    "specialty": "Cardiologist",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Karol Bagh Cardiac Center",
+    "base_rating": 4.6,
+    "short_bio": "Interventional cardiologist with focus on early detection.",
+    "consultation_fee": 1300,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Caught an issue early that my previous doctor missed."}
+    ]
+  },
+  {
+    "id": "doc_014",
+    "name": "Dr. Neha Bhatia",
+    "specialty": "Pediatrician",
+    "area": "Delhi - Dwarka",
+    "hospital_name": "Dwarka Kids Clinic",
+    "base_rating": 4.6,
+    "short_bio": "Warm, experienced pediatrician trusted by local families.",
+    "consultation_fee": 550,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Great with newborns, very reassuring for first-time parents."}
+    ]
+  },
+  {
+    "id": "doc_015",
+    "name": "Dr. Amit Joshi",
+    "specialty": "ENT Specialist",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Karol Bagh ENT Clinic",
+    "base_rating": 4.0,
+    "short_bio": "General ENT care with focus on allergies and hearing tests.",
+    "consultation_fee": 650,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "Solved my recurring ear infection issue."}
+    ]
+  },
+  {
+    "id": "doc_016",
+    "name": "Dr. Pooja Sharma",
+    "specialty": "Gynecologist",
+    "area": "Delhi - Rohini",
+    "hospital_name": "Rohini Maternity & Women's Hospital",
+    "base_rating": 4.8,
+    "short_bio": "Specializes in prenatal care and high-risk pregnancies.",
+    "consultation_fee": 1050,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Guided me through a difficult pregnancy with such care."}
+    ]
+  },
+  {
+    "id": "doc_017",
+    "name": "Dr. Manish Agarwal",
+    "specialty": "Orthopedic",
+    "area": "Delhi - Dwarka",
+    "hospital_name": "Dwarka Ortho & Spine Center",
+    "base_rating": 4.4,
+    "short_bio": "Focus on spine health, back pain, and post-surgical recovery.",
+    "consultation_fee": 950,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "My chronic back pain finally improved."}
+    ]
+  },
+  {
+    "id": "doc_018",
+    "name": "Dr. Ritu Chopra",
+    "specialty": "Dentist",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Smile Bright Dental Studio",
+    "base_rating": 4.5,
+    "short_bio": "Cosmetic dentistry and orthodontics specialist.",
+    "consultation_fee": 500,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "My braces treatment went smoothly from start to finish."}
+    ]
+  },
+  {
+    "id": "doc_019",
+    "name": "Dr. Sanjay Kulkarni",
+    "specialty": "Psychiatrist",
+    "area": "Delhi - Dwarka",
+    "hospital_name": "Dwarka Mental Health Clinic",
+    "base_rating": 4.6,
+    "short_bio": "Experienced in mood disorders and workplace stress counseling.",
+    "consultation_fee": 1150,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Helped me manage work stress in a healthy way."}
+    ]
+  },
+  {
+    "id": "doc_020",
+    "name": "Dr. Ishita Bose",
+    "specialty": "General Physician",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Karol Bagh Community Health Center",
+    "base_rating": 4.2,
+    "short_bio": "Affordable, accessible primary care for the whole family.",
+    "consultation_fee": 350,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "Budget-friendly and always available for urgent visits."}
+    ]
+  },
+  {
+    "id": "doc_021",
+    "name": "Dr. Nikhil Rana",
+    "specialty": "Cardiologist",
+    "area": "Delhi - Rohini",
+    "hospital_name": "Rohini Heart & Vascular Institute",
+    "base_rating": 4.5,
+    "short_bio": "Focus on hypertension management and heart disease prevention.",
+    "consultation_fee": 1250,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Helped me get my blood pressure under control."}
+    ]
+  },
+  {
+    "id": "doc_022",
+    "name": "Dr. Simran Kaur",
+    "specialty": "Dermatologist",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Glow Skin Clinic",
+    "base_rating": 4.4,
+    "short_bio": "Acne treatment and anti-aging skincare specialist.",
+    "consultation_fee": 850,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 4, "text": "Cleared up my acne within a few months."}
+    ]
+  },
+  {
+    "id": "doc_023",
+    "name": "Dr. Tarun Bhatt",
+    "specialty": "Pediatrician",
+    "area": "Delhi - Rohini",
+    "hospital_name": "Rohini Children's Hospital",
+    "base_rating": 4.7,
+    "short_bio": "Comprehensive pediatric care from infancy through adolescence.",
+    "consultation_fee": 600,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "Trustworthy and always available for questions."}
+    ]
+  },
+  {
+    "id": "doc_024",
+    "name": "Dr. Alok Pandey",
+    "specialty": "Orthopedic",
+    "area": "Delhi - Karol Bagh",
+    "hospital_name": "Karol Bagh Joint Replacement Center",
+    "base_rating": 4.6,
+    "short_bio": "Specializes in joint replacement and arthritis management.",
+    "consultation_fee": 1000,
+    "seed_reviews": [
+      {"reviewer_label": "Patient", "rating": 5, "text": "My knee replacement surgery went perfectly."}
+    ]
+  }
+]

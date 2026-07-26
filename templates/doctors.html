@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Find Doctors - MediGuide{% endblock %}
+
+{% block content %}
+<section class="directory-section">
+    <h1>Find a Doctor</h1>
+    <p class="directory-intro">Browse doctors and hospitals near you. No account needed to look around.</p>
+
+    <form method="GET" action="{{ url_for('doctors') }}" class="filter-bar">
+        <div class="filter-group">
+            <label for="specialty">Specialty</label>
+            <select name="specialty" id="specialty" onchange="this.form.submit()">
+                <option value="">All Specialties</option>
+                {% for s in specialties %}
+                    <option value="{{ s }}" {% if s == selected_specialty %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="area">Area</label>
+            <select name="area" id="area" onchange="this.form.submit()">
+                <option value="">All Areas</option>
+                {% for a in areas %}
+                    <option value="{{ a }}" {% if a == selected_area %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if selected_specialty or selected_area %}
+        <a href="{{ url_for('doctors') }}" class="btn-link clear-filters">Clear filters</a>
+        {% endif %}
+    </form>
+
+    {% if doctors|length == 0 %}
+        <div class="empty-state">
+            <p>No doctors found for this filter combination. Try a different specialty or area.</p>
+        </div>
+    {% else %}
+        <p class="results-count">{{ doctors|length }} doctor{{ 's' if doctors|length != 1 else '' }} found</p>
+        <div class="doctor-grid">
+            {% for doc in doctors %}
+            <a href="{{ url_for('doctor_detail', doctor_id=doc.id) }}" class="doctor-card">
+                <div class="doctor-avatar">{{ doc.name.split(' ')[1][0] if doc.name.split(' ')|length > 1 else doc.name[0] }}</div>
+                <h3>{{ doc.name }}</h3>
+                <p class="doctor-specialty">{{ doc.specialty }}</p>
+                <p class="doctor-hospital">{{ doc.hospital_name }}</p>
+                <p class="doctor-area">📍 {{ doc.area }}</p>
+                <div class="doctor-card-footer">
+                    <span class="doctor-rating">★ {{ doc.base_rating }}</span>
+                    <span class="doctor-fee">₹{{ doc.consultation_fee }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
