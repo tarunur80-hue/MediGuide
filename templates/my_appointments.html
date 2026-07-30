@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}My Appointments - MediGuide{% endblock %}
+
+{% block content %}
+<section class="appointments-section">
+    <h1>My Appointments</h1>
+
+    {% if bookings|length == 0 %}
+        <div class="empty-state">
+            <p>You have no appointments yet. <a href="{{ url_for('doctors') }}">Browse doctors</a> to book one.</p>
+        </div>
+    {% else %}
+        <div class="appointments-list">
+            {% for item in bookings %}
+            <div class="appointment-card">
+                <div class="appointment-info">
+                    <h3>{{ item.doctor.name if item.doctor else 'Unknown Doctor' }}</h3>
+                    <p class="appointment-meta">{{ item.doctor.specialty if item.doctor else '' }} &middot; {{ item.doctor.hospital_name if item.doctor else '' }}</p>
+                    <p class="appointment-datetime">{{ item.booking.appointment_date.strftime('%d %b %Y') }} at {{ item.booking.time_slot }}</p>
+                </div>
+                <div class="appointment-status-actions">
+                    <span class="status-badge status-{{ item.booking.status }}">{{ item.booking.status|upper }}</span>
+                    {% if item.booking.status == 'confirmed' %}
+                    <div class="appointment-actions">
+                        <a href="{{ url_for('reschedule_appointment', booking_id=item.booking.id) }}" class="btn-link">Reschedule</a>
+                        <form method="POST" action="{{ url_for('cancel_appointment', booking_id=item.booking.id) }}" onsubmit="return confirm('Cancel this appointment?');">
+                            <button type="submit" class="btn-link btn-cancel">Cancel</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

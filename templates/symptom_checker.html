@@ -10,16 +10,6 @@
         what it might mean and what to do next.
     </p>
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="flash-message">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-
     <form method="POST" action="{{ url_for('symptom_checker') }}" class="checker-form" id="checkerForm">
         <label for="symptoms">Your symptoms</label>
         <textarea
