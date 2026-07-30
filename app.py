@@ -37,6 +37,14 @@ def create_app():
 
     db.init_app(app)
 
+    # Automatically create any missing tables on startup. This is safe to
+    # run every time: it only creates tables that don't exist yet, it never
+    # drops or overwrites existing data. This matters for deployment --
+    # locally we ran this once manually via `flask shell`, but a freshly
+    # deployed server has no database file at all until this runs.
+    with app.app_context():
+        db.create_all()
+
     login_manager = LoginManager()
     login_manager.login_view = "login"
     login_manager.init_app(app)
