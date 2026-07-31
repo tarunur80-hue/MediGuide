@@ -4,29 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MediGuide{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <header class="navbar">
         <a href="{{ url_for('home') }}" class="navbar-brand">Medi<span>Guide</span></a>
         <nav class="navbar-links">
-            <a href="{{ url_for('symptom_checker') }}">Symptom Checker</a>
-            <a href="{{ url_for('doctors') }}">Find Doctors</a>
+            <a href="{{ url_for('symptom_checker') }}" class="{{ 'nav-active' if request.endpoint == 'symptom_checker' }}">Symptom Checker</a>
+            <a href="{{ url_for('doctors') }}" class="{{ 'nav-active' if request.endpoint in ['doctors', 'doctor_detail'] }}">Find Doctors</a>
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('my_appointments') }}">My Appointments</a>
+                <a href="{{ url_for('my_appointments') }}" class="{{ 'nav-active' if request.endpoint == 'my_appointments' }}">My Appointments</a>
                 <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
                     <button type="submit" class="navbar-logout-btn">Logout</button>
                 </form>
             {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('login') }}" class="{{ 'nav-active' if request.endpoint in ['login', 'signup'] }}">Login</a>
             {% endif %}
         </nav>
     </header>
 
-    <main class="page-content">
+    <main class="page-content" id="main-content">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash-message">
+                <div class="flash-message" role="status">
                     {% for message in messages %}<p>{{ message }}</p>{% endfor %}
                 </div>
             {% endif %}

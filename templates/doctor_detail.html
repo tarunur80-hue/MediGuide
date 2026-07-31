@@ -12,7 +12,7 @@
             <h1>{{ doctor.name }}</h1>
             <p class="detail-specialty">{{ doctor.specialty }}</p>
             <p class="detail-hospital">{{ doctor.hospital_name }} &middot; 📍 {{ doctor.area }}</p>
-            <p class="detail-rating">★ {{ doctor.base_rating }} &middot; ₹{{ doctor.consultation_fee }} consultation fee</p>
+            <p class="detail-rating">★ {{ average_rating }} ({{ reviews|length }} review{{ 's' if reviews|length != 1 else '' }}) &middot; ₹{{ doctor.consultation_fee }} consultation fee</p>
         </div>
     </div>
 
@@ -30,16 +30,42 @@
     </div>
 
     <div class="reviews-section">
-        <h3>Reviews ({{ doctor.seed_reviews|length }})</h3>
-        {% for review in doctor.seed_reviews %}
-        <div class="review-card">
-            <div class="review-stars">{% for i in range(review.rating) %}★{% endfor %}{% for i in range(5 - review.rating) %}☆{% endfor %}</div>
-            <p class="review-author">{{ review.reviewer_label }}</p>
-            <p class="review-text">{{ review.text }}</p>
-        </div>
-        {% endfor %}
+        <h3>Reviews ({{ reviews|length }})</h3>
 
-        <a href="#" class="btn-link btn-disabled" title="Review submission launches Day 7">Write a review (coming soon)</a>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('submit_review', doctor_id=doctor.id) }}" class="review-form">
+            <label>Your Rating</label>
+            <div class="star-input" id="starInput">
+                {% for i in range(1, 6) %}
+                <span class="star-choice" data-value="{{ i }}">★</span>
+                {% endfor %}
+            </div>
+            <input type="hidden" name="rating" id="ratingValue" value="0">
+
+            <label for="review_text">Your Review</label>
+            <textarea id="review_text" name="text" rows="3" maxlength="500" placeholder="Share your experience with this doctor..."></textarea>
+
+            <button type="submit" class="btn-primary">Submit Review</button>
+        </form>
+        {% else %}
+        <div class="review-login-prompt">
+            <a href="{{ url_for('login', next=request.path) }}">Log in</a> to write a review.
+        </div>
+        {% endif %}
+
+        {% if reviews|length == 0 %}
+            <div class="empty-state">
+                <p>No reviews yet. Be the first to share your experience.</p>
+            </div>
+        {% else %}
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-stars">{% for i in range(review.rating) %}★{% endfor %}{% for i in range(5 - review.rating) %}☆{% endfor %}</div>
+                <p class="review-author">{{ review.reviewer_label }}</p>
+                <p class="review-text">{{ review.text }}</p>
+            </div>
+            {% endfor %}
+        {% endif %}
     </div>
 </section>
 {% endblock %}

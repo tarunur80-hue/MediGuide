@@ -1,8 +1,9 @@
 # app.py
 #
-# DAY 6 UPDATE: Added signup/login/logout routes (prerequisite for booking),
-# and the full appointment booking system (create, view, reschedule, cancel),
-# all login-gated and ownership-checked per SCHEMA.md and API.md.
+# DAY 7 UPDATE: Added the review/rating submission system. Doctor detail
+# pages now show a combined list of seed reviews + real user-submitted
+# reviews, with a dynamically recalculated average rating. Submission is
+# login-gated per PRD/API.md.
 
 import os
 from datetime import date, datetime
@@ -15,6 +16,7 @@ from dotenv import load_dotenv
 from extensions import db
 from models.user import User
 from models.booking import Booking
+from models.review import Review
 from services.ai_service import analyze_symptoms
 from data.doctor_repository import (
     filter_doctors,
@@ -37,11 +39,6 @@ def create_app():
 
     db.init_app(app)
 
-    # Automatically create any missing tables on startup. This is safe to
-    # run every time: it only creates tables that don't exist yet, it never
-    # drops or overwrites existing data. This matters for deployment --
-    # locally we ran this once manually via `flask shell`, but a freshly
-    # deployed server has no database file at all until this runs.
     with app.app_context():
         db.create_all()
 
@@ -52,6 +49,47 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.get(User, int(user_id))
+
+    def get_combined_reviews_and_rating(doctor):
+        """
+        Combines a doctor's seeded mock reviews (from doctors.json) with
+        real submitted reviews (from the database), and calculates a
+        single average rating across both sources.
+
+        Returns (combined_reviews_list, average_rating_float)
+        """
+        seed_reviews = [
+            {
+                "reviewer_label": r["reviewer_label"],
+                "rating": r["rating"],
+                "text": r["text"],
+                "created_at": None,  # seed reviews have no real timestamp
+            }
+            for r in doctor.get("seed_reviews", [])
+        ]
+
+        real_reviews = (
+            Review.query.filter_by(doctor_id=doctor["id"])
+            .order_by(Review.created_at.desc())
+            .all()
+        )
+        real_reviews_formatted = [
+            {
+                "reviewer_label": f"User ending in {str(r.user_id).zfill(4)[-4:]}",
+                "rating": r.rating,
+                "text": r.text,
+                "created_at": r.created_at,
+            }
+            for r in real_reviews
+        ]
+
+        # Real reviews first (newest first), then seed reviews
+        combined = real_reviews_formatted + seed_reviews
+
+        all_ratings = [r["rating"] for r in combined]
+        average_rating = round(sum(all_ratings) / len(all_ratings), 1) if all_ratings else doctor["base_rating"]
+
+        return combined, average_rating
 
     # ----- Public Routes -----
     @app.route("/")
@@ -91,9 +129,17 @@ def create_app():
             area=selected_area or None,
         )
 
+        # Attach live average rating (seed + real reviews) to each card
+        doctors_with_ratings = []
+        for doc in matching_doctors:
+            _, avg_rating = get_combined_reviews_and_rating(doc)
+            doc_copy = dict(doc)
+            doc_copy["display_rating"] = avg_rating
+            doctors_with_ratings.append(doc_copy)
+
         return render_template(
             "doctors.html",
-            doctors=matching_doctors,
+            doctors=doctors_with_ratings,
             specialties=get_all_specialties(),
             areas=get_all_areas(),
             selected_specialty=selected_specialty,
@@ -105,7 +151,15 @@ def create_app():
         doctor = get_doctor_by_id(doctor_id)
         if doctor is None:
             return render_template("404.html"), 404
-        return render_template("doctor_detail.html", doctor=doctor)
+
+        reviews, average_rating = get_combined_reviews_and_rating(doctor)
+
+        return render_template(
+            "doctor_detail.html",
+            doctor=doctor,
+            reviews=reviews,
+            average_rating=average_rating,
+        )
 
     # ----- Auth Routes -----
     @app.route("/signup", methods=["GET", "POST"])
@@ -229,7 +283,6 @@ def create_app():
             .all()
         )
 
-        # Attach doctor info (from JSON) to each booking for display
         bookings_with_doctors = []
         for booking in user_bookings:
             doctor = get_doctor_by_id(booking.doctor_id)
@@ -298,6 +351,41 @@ def create_app():
             flash("Appointment cancelled.")
 
         return redirect(url_for("my_appointments"))
+
+    # ----- Review Routes -----
+    @app.route("/doctors/<doctor_id>/review", methods=["POST"])
+    @login_required
+    def submit_review(doctor_id):
+        doctor = get_doctor_by_id(doctor_id)
+        if doctor is None:
+            return render_template("404.html"), 404
+
+        rating_str = request.form.get("rating", "").strip()
+        text = request.form.get("text", "").strip()
+
+        if not rating_str.isdigit() or not (1 <= int(rating_str) <= 5):
+            flash("Please select a rating between 1 and 5.")
+            return redirect(url_for("doctor_detail", doctor_id=doctor_id))
+
+        if not text:
+            flash("Please write a short review.")
+            return redirect(url_for("doctor_detail", doctor_id=doctor_id))
+
+        if len(text) > 500:
+            flash("Please keep your review under 500 characters.")
+            return redirect(url_for("doctor_detail", doctor_id=doctor_id))
+
+        new_review = Review(
+            user_id=current_user.id,
+            doctor_id=doctor_id,
+            rating=int(rating_str),
+            text=text,
+        )
+        db.session.add(new_review)
+        db.session.commit()
+
+        flash("Thanks for your review!")
+        return redirect(url_for("doctor_detail", doctor_id=doctor_id))
 
     return app
 
