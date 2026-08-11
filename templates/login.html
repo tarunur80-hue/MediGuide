@@ -8,12 +8,13 @@
     <p class="auth-intro">Log in with your phone number and PIN.</p>
 
     <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="phone_number">Phone Number</label>
         <input type="text" id="phone_number" name="phone_number" placeholder="10-digit number" maxlength="10"
-               value="{{ request.form.get('phone_number', '') }}" required>
+               autocomplete="tel" inputmode="numeric" value="{{ request.form.get('phone_number', '') }}" required>
 
         <label for="pin">PIN</label>
-        <input type="password" id="pin" name="pin" placeholder="Your PIN" maxlength="6" inputmode="numeric" required>
+        <input type="password" id="pin" name="pin" placeholder="Your PIN" maxlength="6" inputmode="numeric" autocomplete="current-password" required>
 
         <button type="submit" class="btn-primary">Log In</button>
     </form>

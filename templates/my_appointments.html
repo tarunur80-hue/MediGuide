@@ -25,6 +25,7 @@
                     <div class="appointment-actions">
                         <a href="{{ url_for('reschedule_appointment', booking_id=item.booking.id) }}" class="btn-link">Reschedule</a>
                         <form method="POST" action="{{ url_for('cancel_appointment', booking_id=item.booking.id) }}" onsubmit="return confirm('Cancel this appointment?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn-link btn-cancel">Cancel</button>
                         </form>
                     </div>

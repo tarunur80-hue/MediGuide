@@ -10,6 +10,7 @@
     <p class="booking-intro">{{ doctor.specialty }} &middot; {{ doctor.hospital_name }}</p>
 
     <form method="POST" action="{{ url_for('reschedule_appointment', booking_id=booking.id) }}" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="appointment_date">New Date</label>
         <input type="date" id="appointment_date" name="appointment_date" min="{{ min_date }}"
                value="{{ booking.appointment_date }}" required>

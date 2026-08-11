@@ -1,16 +1,12 @@
-# app.py
-#
-# DAY 7 UPDATE: Added the review/rating submission system. Doctor detail
-# pages now show a combined list of seed reviews + real user-submitted
-# reviews, with a dynamically recalculated average rating. Submission is
-# login-gated per PRD/API.md.
-
 import os
 from datetime import date, datetime
 from flask import Flask, render_template, request, flash, redirect, url_for, abort
 from flask_login import (
     LoginManager, login_user, logout_user, login_required, current_user,
 )
+from flask_wtf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from dotenv import load_dotenv
 
 from extensions import db
@@ -29,6 +25,41 @@ load_dotenv()
 
 TIME_SLOTS = ["10:00 AM", "12:00 PM", "3:00 PM", "5:00 PM"]
 
+csrf = CSRFProtect()
+limiter = Limiter(key_func=get_remote_address, default_limits=[])
+
+
+def validate_booking_datetime(date_str, time_slot):
+    """
+    Shared validation logic for both booking creation and rescheduling.
+    Returns (parsed_date, error_message). error_message is None if valid.
+    Removes duplicate validation that used to live separately in
+    book_appointment() and reschedule_appointment().
+    """
+    try:
+        appointment_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return None, "Please choose a valid date."
+
+    if appointment_date < date.today():
+        return None, "Please choose a future date."
+
+    if time_slot not in TIME_SLOTS:
+        return None, "Please select a valid time slot."
+
+    return appointment_date, None
+
+
+def doctor_display_name(doctor):
+    """
+    Safely extracts an initial for the avatar. Handles single-word names
+    without crashing, unlike the previous inline Jinja logic
+    (doctor.name.split(' ')[1][0]) which would throw an IndexError for
+    any doctor without a space in their name.
+    """
+    parts = doctor["name"].split(" ")
+    return parts[1][0] if len(parts) > 1 else parts[0][0]
+
 
 def create_app():
     app = Flask(__name__)
@@ -37,10 +68,19 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///mediguide.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    # ----- Session / cookie hardening -----
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    app.config["SESSION_COOKIE_SECURE"] = os.environ.get("FLASK_ENV") == "production"
+    app.config["PERMANENT_SESSION_LIFETIME"] = 60 * 60 * 24 * 7
+
     db.init_app(app)
 
     with app.app_context():
         db.create_all()
+
+    csrf.init_app(app)
+    limiter.init_app(app)
 
     login_manager = LoginManager()
     login_manager.login_view = "login"
@@ -50,29 +90,32 @@ def create_app():
     def load_user(user_id):
         return db.session.get(User, int(user_id))
 
-    def get_combined_reviews_and_rating(doctor):
+    def get_combined_reviews_and_rating(doctor, all_reviews_by_doctor=None):
         """
-        Combines a doctor's seeded mock reviews (from doctors.json) with
-        real submitted reviews (from the database), and calculates a
-        single average rating across both sources.
-
-        Returns (combined_reviews_list, average_rating_float)
+        Combines seed reviews with real submitted reviews and calculates a
+        single average rating. Accepts an optional pre-fetched dict of
+        {doctor_id: [Review, ...]} so callers rendering many doctors at once
+        can fetch ALL reviews in one query instead of one query per doctor.
         """
         seed_reviews = [
             {
                 "reviewer_label": r["reviewer_label"],
                 "rating": r["rating"],
                 "text": r["text"],
-                "created_at": None,  # seed reviews have no real timestamp
+                "created_at": None,
             }
             for r in doctor.get("seed_reviews", [])
         ]
 
-        real_reviews = (
-            Review.query.filter_by(doctor_id=doctor["id"])
-            .order_by(Review.created_at.desc())
-            .all()
-        )
+        if all_reviews_by_doctor is not None:
+            real_reviews = all_reviews_by_doctor.get(doctor["id"], [])
+        else:
+            real_reviews = (
+                Review.query.filter_by(doctor_id=doctor["id"])
+                .order_by(Review.created_at.desc())
+                .all()
+            )
+
         real_reviews_formatted = [
             {
                 "reviewer_label": f"User ending in {str(r.user_id).zfill(4)[-4:]}",
@@ -83,13 +126,16 @@ def create_app():
             for r in real_reviews
         ]
 
-        # Real reviews first (newest first), then seed reviews
         combined = real_reviews_formatted + seed_reviews
 
         all_ratings = [r["rating"] for r in combined]
         average_rating = round(sum(all_ratings) / len(all_ratings), 1) if all_ratings else doctor["base_rating"]
 
         return combined, average_rating
+
+    @app.context_processor
+    def inject_helpers():
+        return dict(doctor_display_name=doctor_display_name)
 
     # ----- Public Routes -----
     @app.route("/")
@@ -129,10 +175,21 @@ def create_app():
             area=selected_area or None,
         )
 
-        # Attach live average rating (seed + real reviews) to each card
+        # PERFORMANCE FIX: fetch ALL real reviews for the matching doctors in
+        # ONE query, then group in Python -- instead of one query per doctor
+        # card (previously 24 separate queries on the unfiltered page).
+        doctor_ids_on_page = [d["id"] for d in matching_doctors]
+        all_reviews = (
+            Review.query.filter(Review.doctor_id.in_(doctor_ids_on_page)).all()
+            if doctor_ids_on_page else []
+        )
+        reviews_by_doctor = {}
+        for r in all_reviews:
+            reviews_by_doctor.setdefault(r.doctor_id, []).append(r)
+
         doctors_with_ratings = []
         for doc in matching_doctors:
-            _, avg_rating = get_combined_reviews_and_rating(doc)
+            _, avg_rating = get_combined_reviews_and_rating(doc, reviews_by_doctor)
             doc_copy = dict(doc)
             doc_copy["display_rating"] = avg_rating
             doctors_with_ratings.append(doc_copy)
@@ -163,6 +220,7 @@ def create_app():
 
     # ----- Auth Routes -----
     @app.route("/signup", methods=["GET", "POST"])
+    @limiter.limit("10 per hour", methods=["POST"])
     def signup():
         if current_user.is_authenticated:
             return redirect(url_for("home"))
@@ -201,6 +259,7 @@ def create_app():
         return render_template("signup.html")
 
     @app.route("/login", methods=["GET", "POST"])
+    @limiter.limit("15 per hour", methods=["POST"])
     def login():
         if current_user.is_authenticated:
             return redirect(url_for("home"))
@@ -211,12 +270,17 @@ def create_app():
 
             user = User.query.filter_by(phone_number=phone_number).first()
 
+            # Same generic error whether the phone doesn't exist OR the PIN
+            # is wrong -- prevents user enumeration via error messages.
             if user is None or not user.check_pin(pin):
                 flash("Invalid phone number or PIN.")
                 return redirect(url_for("login"))
 
             login_user(user)
             next_page = request.args.get("next")
+            # Open-redirect protection: only allow relative paths.
+            if next_page and not next_page.startswith("/"):
+                next_page = None
             return redirect(next_page or url_for("home"))
 
         return render_template("login.html")
@@ -240,18 +304,9 @@ def create_app():
             date_str = request.form.get("appointment_date", "").strip()
             time_slot = request.form.get("time_slot", "").strip()
 
-            try:
-                appointment_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-            except ValueError:
-                flash("Please choose a valid date.")
-                return redirect(url_for("book_appointment", doctor_id=doctor_id))
-
-            if appointment_date < date.today():
-                flash("Please choose a future date.")
-                return redirect(url_for("book_appointment", doctor_id=doctor_id))
-
-            if time_slot not in TIME_SLOTS:
-                flash("Please select a valid time slot.")
+            appointment_date, error = validate_booking_datetime(date_str, time_slot)
+            if error:
+                flash(error)
                 return redirect(url_for("book_appointment", doctor_id=doctor_id))
 
             new_booking = Booking(
@@ -300,23 +355,21 @@ def create_app():
             abort(403)
 
         doctor = get_doctor_by_id(booking.doctor_id)
+        if doctor is None:
+            flash("This doctor's profile is no longer available.")
+            return redirect(url_for("my_appointments"))
+
+        if booking.status == "cancelled":
+            flash("This appointment has already been cancelled and can't be rescheduled.")
+            return redirect(url_for("my_appointments"))
 
         if request.method == "POST":
             date_str = request.form.get("appointment_date", "").strip()
             time_slot = request.form.get("time_slot", "").strip()
 
-            try:
-                appointment_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-            except ValueError:
-                flash("Please choose a valid date.")
-                return redirect(url_for("reschedule_appointment", booking_id=booking_id))
-
-            if appointment_date < date.today():
-                flash("Please choose a future date.")
-                return redirect(url_for("reschedule_appointment", booking_id=booking_id))
-
-            if time_slot not in TIME_SLOTS:
-                flash("Please select a valid time slot.")
+            appointment_date, error = validate_booking_datetime(date_str, time_slot)
+            if error:
+                flash(error)
                 return redirect(url_for("reschedule_appointment", booking_id=booking_id))
 
             booking.appointment_date = appointment_date
@@ -355,6 +408,7 @@ def create_app():
     # ----- Review Routes -----
     @app.route("/doctors/<doctor_id>/review", methods=["POST"])
     @login_required
+    @limiter.limit("20 per hour")
     def submit_review(doctor_id):
         doctor = get_doctor_by_id(doctor_id)
         if doctor is None:
@@ -386,6 +440,25 @@ def create_app():
 
         flash("Thanks for your review!")
         return redirect(url_for("doctor_detail", doctor_id=doctor_id))
+
+    # ----- Error Handlers -----
+    @app.errorhandler(404)
+    def handle_404(e):
+        return render_template("404.html"), 404
+
+    @app.errorhandler(403)
+    def handle_403(e):
+        return render_template("403.html"), 403
+
+    @app.errorhandler(500)
+    def handle_500(e):
+        db.session.rollback()
+        return render_template("500.html"), 500
+
+    @app.errorhandler(429)
+    def handle_rate_limit(e):
+        flash("Too many attempts. Please wait a bit before trying again.")
+        return render_template("429.html"), 429
 
     return app
 

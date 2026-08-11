@@ -7,7 +7,7 @@
     <a href="{{ url_for('doctors') }}" class="btn-link">&larr; Back to directory</a>
 
     <div class="detail-header">
-        <div class="doctor-avatar doctor-avatar-large">{{ doctor.name.split(' ')[1][0] if doctor.name.split(' ')|length > 1 else doctor.name[0] }}</div>
+        <div class="doctor-avatar doctor-avatar-large" aria-hidden="true">{{ doctor_display_name(doctor) }}</div>
         <div>
             <h1>{{ doctor.name }}</h1>
             <p class="detail-specialty">{{ doctor.specialty }}</p>
@@ -34,10 +34,11 @@
 
         {% if current_user.is_authenticated %}
         <form method="POST" action="{{ url_for('submit_review', doctor_id=doctor.id) }}" class="review-form">
-            <label>Your Rating</label>
-            <div class="star-input" id="starInput">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label id="ratingLabel">Your Rating</label>
+            <div class="star-input" id="starInput" role="radiogroup" aria-labelledby="ratingLabel">
                 {% for i in range(1, 6) %}
-                <span class="star-choice" data-value="{{ i }}">★</span>
+                <span class="star-choice" data-value="{{ i }}" role="radio" aria-checked="false" aria-label="{{ i }} star{{ 's' if i != 1 }}" tabindex="0">★</span>
                 {% endfor %}
             </div>
             <input type="hidden" name="rating" id="ratingValue" value="0">

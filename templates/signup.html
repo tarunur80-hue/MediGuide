@@ -8,15 +8,16 @@
     <p class="auth-intro">Sign up with your phone number and a PIN to book appointments and leave reviews.</p>
 
     <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="phone_number">Phone Number</label>
         <input type="text" id="phone_number" name="phone_number" placeholder="10-digit number" maxlength="10"
-               value="{{ request.form.get('phone_number', '') }}" required>
+               autocomplete="tel" inputmode="numeric" value="{{ request.form.get('phone_number', '') }}" required>
 
         <label for="pin">PIN (4-6 digits)</label>
-        <input type="password" id="pin" name="pin" placeholder="Choose a PIN" maxlength="6" inputmode="numeric" required>
+        <input type="password" id="pin" name="pin" placeholder="Choose a PIN" maxlength="6" inputmode="numeric" autocomplete="new-password" required>
 
         <label for="confirm_pin">Confirm PIN</label>
-        <input type="password" id="confirm_pin" name="confirm_pin" placeholder="Re-enter your PIN" maxlength="6" inputmode="numeric" required>
+        <input type="password" id="confirm_pin" name="confirm_pin" placeholder="Re-enter your PIN" maxlength="6" inputmode="numeric" autocomplete="new-password" required>
 
         <button type="submit" class="btn-primary">Sign Up</button>
     </form>

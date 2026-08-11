@@ -1,9 +1,8 @@
-// main.js
-// Shared JS interactions across MediGuide.
-
 console.log("MediGuide loaded.");
 
 // ---------- Star rating input (doctor review form) ----------
+// Supports mouse click/hover AND keyboard (Enter/Space to select,
+// matching the role="radio" semantics added for screen reader users.
 document.addEventListener("DOMContentLoaded", function () {
     const starContainer = document.getElementById("starInput");
     if (!starContainer) return;
@@ -14,20 +13,34 @@ document.addEventListener("DOMContentLoaded", function () {
     function highlightStars(value) {
         stars.forEach(function (star) {
             const starValue = parseInt(star.getAttribute("data-value"), 10);
-            star.classList.toggle("star-active", starValue <= value);
+            const isActive = starValue <= value;
+            star.classList.toggle("star-active", isActive);
+        });
+    }
+
+    function selectRating(value) {
+        ratingInput.value = value;
+        highlightStars(value);
+        stars.forEach(function (star) {
+            const starValue = parseInt(star.getAttribute("data-value"), 10);
+            star.setAttribute("aria-checked", starValue === value ? "true" : "false");
         });
     }
 
     stars.forEach(function (star) {
         star.addEventListener("click", function () {
-            const value = parseInt(star.getAttribute("data-value"), 10);
-            ratingInput.value = value;
-            highlightStars(value);
+            selectRating(parseInt(star.getAttribute("data-value"), 10));
         });
 
         star.addEventListener("mouseenter", function () {
-            const value = parseInt(star.getAttribute("data-value"), 10);
-            highlightStars(value);
+            highlightStars(parseInt(star.getAttribute("data-value"), 10));
+        });
+
+        star.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                selectRating(parseInt(star.getAttribute("data-value"), 10));
+            }
         });
     });
 

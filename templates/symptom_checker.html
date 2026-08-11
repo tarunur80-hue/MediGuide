@@ -11,6 +11,7 @@
     </p>
 
     <form method="POST" action="{{ url_for('symptom_checker') }}" class="checker-form" id="checkerForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="symptoms">Your symptoms</label>
         <textarea
             id="symptoms"

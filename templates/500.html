@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Something Went Wrong - MediGuide{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <span class="error-icon">⚠️</span>
+    <h1>Something Went Wrong</h1>
+    <p class="hero-subtitle">We hit an unexpected error on our end. Please try again in a moment.</p>
+    <a href="{{ url_for('home') }}" class="btn-link">&larr; Back to homepage</a>
+</section>
+{% endblock %}

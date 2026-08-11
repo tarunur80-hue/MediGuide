@@ -42,7 +42,7 @@
         <div class="doctor-grid">
             {% for doc in doctors %}
             <a href="{{ url_for('doctor_detail', doctor_id=doc.id) }}" class="doctor-card">
-                <div class="doctor-avatar">{{ doc.name.split(' ')[1][0] if doc.name.split(' ')|length > 1 else doc.name[0] }}</div>
+                <div class="doctor-avatar" aria-hidden="true">{{ doctor_display_name(doc) }}</div>
                 <h3>{{ doc.name }}</h3>
                 <p class="doctor-specialty">{{ doc.specialty }}</p>
                 <p class="doctor-hospital">{{ doc.hospital_name }}</p>
