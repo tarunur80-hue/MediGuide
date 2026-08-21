@@ -82,6 +82,24 @@ def create_app():
     csrf.init_app(app)
     limiter.init_app(app)
 
+    # ----- Security headers on every response -----
+    # These are lightweight, dependency-free protections appropriate for
+    # this project's risk level (no need for a heavier library like
+    # Flask-Talisman for a capstone app with no complex embedding needs).
+    @app.after_request
+    def set_security_headers(response):
+        # Prevents browsers from MIME-sniffing a response away from the
+        # declared Content-Type (mitigates certain XSS attack vectors).
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        # Prevents this site from being embedded in an <iframe> on another
+        # site (mitigates clickjacking).
+        response.headers["X-Frame-Options"] = "DENY"
+        # Controls how much referrer information is sent to other sites.
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        # Restricts browser features this app doesn't use.
+        response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+        return response
+
     login_manager = LoginManager()
     login_manager.login_view = "login"
     login_manager.init_app(app)
@@ -141,6 +159,14 @@ def create_app():
     @app.route("/")
     def home():
         return render_template("index.html")
+
+    @app.route("/robots.txt")
+    def robots_txt():
+        return (
+            "User-agent: *\nAllow: /\n",
+            200,
+            {"Content-Type": "text/plain"},
+        )
 
     @app.route("/symptom-checker", methods=["GET", "POST"])
     def symptom_checker():

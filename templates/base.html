@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MediGuide{% endblock %}</title>
+
+    <title>{% block title %}MediGuide — Know What's Wrong, Know What To Do Next{% endblock %}</title>
+    <meta name="description" content="{% block description %}MediGuide helps you understand your symptoms, find the right doctor nearby, and book appointments — all in one place.{% endblock %}">
+    <meta name="theme-color" content="#1F3A5F">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='img/icon-192.png') }}">
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% block og_title %}MediGuide — Know What's Wrong, Know What To Do Next{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}An AI-guided health companion: check your symptoms, find nearby doctors, and book appointments in one place.{% endblock %}">
+    <meta property="og:image" content="{{ url_for('static', filename='img/icon-512.png', _external=True) }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:site_name" content="MediGuide">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{% block twitter_title %}MediGuide{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Know what's wrong. Know what to do next.{% endblock %}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='img/icon-512.png', _external=True) }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
